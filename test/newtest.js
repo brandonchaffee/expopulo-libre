@@ -12,6 +12,6 @@ contract("Individual Tests", function(accounts){
 		let receipt = instance.transactionHash;
 		console.log(receipt);
 		// console.log(Object.keys(instance.contract._eth));//.getTransactionReceipt(receipt));
-		console.log(instance.contract._eth.gasPrice);//.getTransactionReceipt(receipt));
+		// console.log(instance.contract._eth.gasPrice);//.getTransactionReceipt(receipt));
 	});
 })
