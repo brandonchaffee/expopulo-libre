@@ -1,3 +1,9 @@
 import expectThrow from './helpers/expectThrow';
 
-const LogicContainer = artifacts.require("LogicContainer");
+const Content = artifacts.require("Content");
+
+contract("Content", function(accounts){
+    it("Works", async function(){
+
+    })
+})
