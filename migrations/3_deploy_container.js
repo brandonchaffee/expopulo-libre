@@ -7,13 +7,13 @@ var Payment = artifacts.require("./sections/Payment.sol")
 var Token = artifacts.require("./sections/Token.sol")
 
 module.exports = function(deployer) {
-	deployer.link(Content, CPTContainer);
-	deployer.link(Payment, CPTContainer);
-	deployer.link(Token, CPTContainer);
-	deployer.deploy(CPTContainer);
-
-	deployer.link(Content, CMTContainer);
-	deployer.link(Moderation, CMTContainer);
-	deployer.link(Token, CMTContainer);
-	deployer.deploy(CMTContainer);
+	// deployer.link(Content, CPTContainer);
+	// deployer.link(Payment, CPTContainer);
+	// deployer.link(Token, CPTContainer);
+	// deployer.deploy(CPTContainer);
+	//
+	// deployer.link(Content, CMTContainer);
+	// deployer.link(Moderation, CMTContainer);
+	// deployer.link(Token, CMTContainer);
+	// deployer.deploy(CMTContainer);
 };
