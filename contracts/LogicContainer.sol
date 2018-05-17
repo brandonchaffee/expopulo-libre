@@ -5,10 +5,6 @@ import './sections/Payment.sol';
 import './sections/Moderation.sol';
 import './sections/Token.sol';
 
-/* contract LogicContainer is Content, Payment, Moderation, Token {
-    //ADD Constructor stuff
-} */
-
-contract LogicContainer is Content, Payment, Token {
+contract LogicContainer is Content, Payment, Moderation, Token {
     //ADD Constructor stuff
 }

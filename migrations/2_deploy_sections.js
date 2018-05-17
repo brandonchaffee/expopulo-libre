@@ -5,7 +5,7 @@ var Token = artifacts.require("./sections/Token.sol")
 
 module.exports = function(deployer) {
 	deployer.deploy(Content);
-	// deployer.deploy(Moderation);
+	deployer.deploy(Moderation);
 	deployer.deploy(Payment);
 	deployer.deploy(Token);
 };
