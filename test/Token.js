@@ -1,4 +1,4 @@
-import assertRevert from './helpers/assertRevert';
+import assertRevert from "./helpers/assertRevert";
 
 const Token = artifacts.require("TokenTest");
 const supply = 100000000;
@@ -11,33 +11,33 @@ contract("Token", function([owner, recipient, spender, nonspender]){
         this.token = await Token.new(supply,decimals,symbol,name,{from: owner});
     });
     describe("Construction",  function(){
-        it('has correct supply', async function(){
+        it("has correct supply", async function(){
             const contractSupply = await this.token.totalSupply();
             assert.equal(contractSupply, supply);
         });
-        it('has correct decimals', async function(){
+        it("has correct decimals", async function(){
             const contractDecimals = await this.token.decimals();
             assert.equal(contractDecimals, decimals);
         });
-        it('has correct symbol', async function(){
+        it("has correct symbol", async function(){
             const contractSymbol = await this.token.symbol();
             assert.equal(contractSymbol, symbol);
         });
-        it('has correct name', async function(){
+        it("has correct name", async function(){
             const contractName = await this.token.name();
             assert.equal(contractName, name);
         });
     });
     describe("Balance Transfer", function(){
-        it('owner has balance of total supply', async function(){
+        it("owner has balance of total supply", async function(){
             const ownerBalance = await this.token.balanceOf(owner);
             assert.equal(ownerBalance, supply);
         });
-        it('recipient has zero balance', async function(){
+        it("recipient has zero balance", async function(){
             const recipientBalance = await this.token.balanceOf(recipient);
             assert.equal(recipientBalance, 0);
         });
-        it('recipient received balance from owner', async function(){
+        it("recipient received balance from owner", async function(){
             const transferValue = 100;
             const oBefore = await this.token.balanceOf(owner);
             const rBefore = await this.token.balanceOf(recipient);
@@ -52,20 +52,20 @@ contract("Token", function([owner, recipient, spender, nonspender]){
             assert.equal(rAfter.toNumber(), rBefore.toNumber() + transferValue,
                 "Recipient balance incorrect");
         });
-        it('reverts without sufficient balance', async function(){
+        it("reverts without sufficient balance", async function(){
             const transferValue = 200;
             await assertRevert(this.token.transfer(owner, transferValue,
                 {from: recipient}));
         });
     });
     describe("Approval", function(){
-        it('has correct allowance', async function(){
+        it("has correct allowance", async function(){
             const approvalAmount = 500;
             await this.token.approve(spender, approvalAmount, {from: owner});
             const allowanceAmount = await this.token.allowance(owner, spender);
             assert.equal(approvalAmount, allowanceAmount);
         });
-        it('allows transfer from spender', async function(){
+        it("allows transfer from spender", async function(){
             const approvalAmount = 500;
             await this.token.approve(spender, approvalAmount, {from: owner});
 
@@ -84,14 +84,14 @@ contract("Token", function([owner, recipient, spender, nonspender]){
                 "Recipient balance incorrect");
 
         });
-        it('reverts transfer from nonspender', async function(){
+        it("reverts transfer from nonspender", async function(){
             const transferValue = 200;
             const approvalAmount = 500;
             await this.token.approve(spender, approvalAmount, {from: owner});
             assertRevert(this.token.transferFrom(owner, recipient,
                 transferValue, {from: nonspender}));
         });
-        it('fail until approval increased', async function(){
+        it("fail until approval increased", async function(){
             const transferValue = 1000;
             const initialApproval = 500;
             const approvalIncrease = 750;

@@ -37,4 +37,16 @@ contract Content is EternalStorage {
 		SAddress[keccak256(_rHash, "owner")] = msg.sender;
         SBool[keccak256(_rHash, "responseTo", _qHash)] = true;
 	}
+
+	function getOwner(bytes _hash) public view returns(address){
+		return SAddress[keccak256(_hash, "owner")];
+	}
+
+	function getCommunity(bytes _hash) public view returns(string){
+		return SString[keccak256(_hash, "community")];
+	}
+
+	function getType(bytes _hash) public view returns(uint256){
+		return SUint[keccak256(_hash, "type")];
+	}
 }
