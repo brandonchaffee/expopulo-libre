@@ -21,6 +21,11 @@ contract Content is EternalStorage {
 		_;
 	}
 
+	modifier isOwner(bytes _hash) {
+		require(msg.sender == SAddress[keccak256(_hash, "owner")]);
+		_;
+	}
+
 	function createQuery(bytes _qHash, string _community, uint256 _type)
 		uninitialized(_qHash)
 	public {
@@ -36,6 +41,22 @@ contract Content is EternalStorage {
 	public {
 		SAddress[keccak256(_rHash, "owner")] = msg.sender;
         SBool[keccak256(_rHash, "responseTo", _qHash)] = true;
+	}
+
+	function setTarget(bytes _qHash, address _target)
+		initialized(_qHash)
+		isOwner(_qHash)
+	public {
+		require(SUint[keccak256(_qHash, "type")] != 1);
+		SAddress[keccak256(_qHash, "target")] = _target;
+	}
+
+	function isResponseTo(bytes _qHash, bytes _rHash) public view returns(bool){
+		return SBool[keccak256(_rHash, "responseTo", _qHash)];
+	}
+
+	function getTarget(bytes _qHash) public view returns(address){
+		return SAddress[keccak256(_qHash, "target")];
 	}
 
 	function getOwner(bytes _hash) public view returns(address){
