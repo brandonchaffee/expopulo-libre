@@ -1,5 +1,4 @@
 import assertRevert from './helpers/assertRevert';
-// var lkTestHelpers = require('lk-test-helpers');
 
 const Content = artifacts.require("ContentTest");
 const qH = "027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39";
