@@ -14,7 +14,7 @@ contract Payment is Escrow {
         require(!SBool[keccak256(_rHash, "isInvalid")]);
         _;
  	}
- 
+
 	modifier isOwner(bytes _hash) {
 		require(msg.sender == SAddress[keccak256(_hash, "owner")]);
 		_;
@@ -25,8 +25,8 @@ contract Payment is Escrow {
 		_;
 	}
 
-	function stakeBounty(bytes _qHash, uint256 _amount) 
-		initialized(_qHash) 
+	function stakeBounty(bytes _qHash, uint256 _amount)
+		initialized(_qHash)
 	public {
 		require(hasSufficientBalance(_amount));
 
@@ -52,16 +52,16 @@ contract Payment is Escrow {
 		SUint[keccak256(_rHash, "totalDisbursed")] =
 		SUint[keccak256(_rHash, "totalDisbursed")].add(_amount);
 		SUint[keccak256(_rHash, "escrowWindow", msg.sender)] = now.add(
-		SUint[keccak256(_rHash, "paymentLockout")]);
+		SUint[keccak256( "paymentLockout")]);
 	}
 
 	function retrieveBounty(bytes _rHash, address _disburser)
-		initialized(_rHash) 
-		validResponse(_rHash) 
+		initialized(_rHash)
+		validResponse(_rHash)
 		isOwner(_rHash)
 		outEscrowWindow(_rHash, _disburser)
 	public {
-		uint256 _amount = SUint[keccak256(_rHash, "disbursementOf", 
+		uint256 _amount = SUint[keccak256(_rHash, "disbursementOf",
 			_disburser)];
 
 		SUint[keccak256(_rHash, "disbursementOf", _disburser)] =
@@ -80,6 +80,21 @@ contract Payment is Escrow {
 		SUint[keccak256(_rHash, "disbursementOf", msg.sender)].sub(_amount);
 
 		SUint[keccak256(_qHash, "stakeOf", msg.sender)] =
-		SUint[keccak256(_qHash, "stakeOf", msg.sender)].add(_amount);		
+		SUint[keccak256(_qHash, "stakeOf", msg.sender)].add(_amount);
 	}
-}
+
+	function getTotalStaked(bytes _qHash) public view returns(uint256){
+		return SUint[keccak256(_qHash, "totalStaked")];
+	}
+
+	function getStakeOf(bytes _qHash, address _staker) public view returns(uint256){
+		return SUint[keccak256(_qHash, "stakeOf", _staker)];
+	}
+
+	function getTotalDisbursed(bytes _rHash) public view returns(uint256){
+		return SUint[keccak256(_rHash, "totalDisbursed")];
+	}
+
+	function getDisbursementOf(bytes _rHash, address _disburser) public view returns(uint256){
+		return SUint[keccak256(_rHash, "disbursementOf", _disburser)];
+	}}
