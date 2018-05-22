@@ -6,5 +6,37 @@ import './sections/Moderation.sol';
 import './sections/Token.sol';
 
 contract LogicContainer is Content, Payment, Moderation, Token {
-    //ADD Constructor stuff
+    constructor(
+        uint256 _totalSupply,
+        uint256 _decimals,
+        string _symbol,
+        string _name,
+        uint256 _paymentLockout
+    ) public {
+        SUint[keccak256("totalSupply")] = _totalSupply;
+        SUint[keccak256("decimals")] = _decimals;
+        SString[keccak256("symbol")] = _symbol;
+        SString[keccak256("name")] = _name;
+        SUint[keccak256("balance", msg.sender)] = _totalSupply;
+        SUint[keccak256("paymentLockout")] = _paymentLockout;
+    }
+
+    function getSUInt(bytes32 _hash) public view returns(uint256){
+        return SUint[_hash];
+    }
+    function getSString(bytes32 _hash) public view returns(string){
+        return SString[_hash];
+    }
+    function getSAddress(bytes32 _hash) public view returns(address){
+        return SAddress[_hash];
+    }
+    function getSBytes(bytes32 _hash) public view returns(bytes){
+        return SBytes[_hash];
+    }
+    function getSBool(bytes32 _hash) public view returns(bool){
+        return SBool[_hash];
+    }
+    function getSInt(bytes32 _hash) public view returns(int256){
+        return SInt[_hash];
+    }
 }
