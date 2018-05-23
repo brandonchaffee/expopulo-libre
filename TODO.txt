@@ -1,0 +1,2 @@
+1. Remove non-universal getters
+2. Create type registry

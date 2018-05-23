@@ -14,7 +14,7 @@ npm install -g truffle
 npm install -g ganache-cli
 ```
 
-## Getting Started
+## Build and Test
 
 Once the proper global dependencies have been added, run a personal blockchain through Ganache with the following command. Alternatively, the Ganache application can be downloaded [here](https://github.com/trufflesuite/ganache/releases).
 
