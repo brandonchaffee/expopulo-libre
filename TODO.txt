@@ -1,2 +1,2 @@
-1. Remove non-universal getters
+1. Remove non-universal getters, place within test contracts
 2. Create type registry
