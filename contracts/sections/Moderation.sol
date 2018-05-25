@@ -75,7 +75,7 @@ contract Moderation is Escrow {
 		}
 	}
 
-	function ChallengeDepositNeeded(bytes _qHash, bytes _rHash, uint256 _type)
+	function challengeDepositNeeded(bytes _qHash, bytes _rHash, uint256 _type)
 	public view returns(uint) {
 	    uint256 needed;
 		if(_type == 1){
@@ -113,7 +113,7 @@ contract Moderation is Escrow {
 		}
 	}
 
-	function AffirmDepositNeeded(bytes _rHash, uint256 _type)
+	function affirmDepositNeeded(bytes _rHash, uint256 _type)
 	public view returns(uint) {
 		uint256 needed = SUint[keccak256(_rHash, "CDepositTotal",
 			_type)];
@@ -185,6 +185,8 @@ contract Moderation is Escrow {
 		SBool[keccak256(_rHash, "paymentCollected", _type, msg.sender)] = true;
 	}
 
+
+
 	// function collectModerationBounty(
 	// 	bytes _qHash,
 	// 	bytes _rHash,
@@ -194,4 +196,25 @@ contract Moderation is Escrow {
 	// public {
 
 	// }
+
+	function activateModerator(string _community)
+	public {
+		uint256 _deposit = SUint[keccak256("moderatorDeposit")];
+		require(!SBool[keccak256(_community, msg.sender)]);
+		require(now > SUint[keccak256("moderatorDepositLockout")].add(
+			SUint[keccak256(_community, msg.sender, "activatedAt")]));
+		require(hasSufficientBalance(_deposit));
+
+		withdrawFrom(_deposit, msg.sender);
+		SBool[keccak256(_community, msg.sender)] = true;
+		SUint[keccak256(_community, msg.sender, "activatedAt")] = now.add(
+			 SUint[keccak256("moderatorDepositLockout")]);
+	}
+
+	function deactivateModerator(string _community)
+	public {
+		require(SBool[keccak256(_community, msg.sender)]);
+		depositTo(SUint[keccak256("moderatorDeposit")], msg.sender);
+		SBool[keccak256(_community, msg.sender)] = false;
+	}
 }

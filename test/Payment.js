@@ -148,7 +148,7 @@ contract("Payment", function([creator, responder, lowBalance]){
             assert.equal(postRetrieval, preRetrieval - disburseAmount);
         });
     });
-    describe("Retrieval", function(){
+    describe("Recall", function(){
         it("has no effect if already retrieved", async function(){
             const amount = 25;
             await this.token.stakeBounty(qInit, amount, {from:creator});
