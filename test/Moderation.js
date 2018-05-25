@@ -82,9 +82,44 @@ contract("Moderation", function([creator, responder, modA, modB, modC, nonMod,
                 {from:spenderA}));
         });
     });
-    // describe("Affirm", function(){
-    //
-    // });
+    describe("Affirm", function(){
+        it("accounts deposits", async function(){
+            await this.token.challenge(qInit, rInit, 500, 1, {from:spenderC});
+            const aDeposit = 10;
+            const bDeposit = 5;
+            await this.token.affirm(rInit, aDeposit, 1, {from:spenderA});
+            await this.token.affirm(rInit, bDeposit, 1, {from:spenderB});
+            const spenderADeposit = await this.token.getADepositOf(rInit, 1,
+                spenderA);
+            const spenderBDeposit = await this.token.getADepositOf(rInit, 1,
+                spenderB);
+            const totalDeposit = await this.token.getTotalADeposit(rInit, 1);
+            assert.equal(spenderADeposit.toNumber(), aDeposit);
+            assert.equal(spenderBDeposit.toNumber(), bDeposit);
+            assert.equal(totalDeposit.toNumber(), aDeposit + bDeposit);
+        });
+        it("needed value extends moderation window further", async function(){
+            await this.token.challenge(qInit, rInit, 500, 1, {from:spenderA});
+            const cWindow = await this.token.getModerationWindow(rInit, 1);
+            await increaseTimeTo(this.midTime);
+            await this.token.affirm(rInit, 500, 1, {from:spenderB});
+            const aWindow = await this.token.getModerationWindow(rInit, 1);
+            assert(aWindow > cWindow);
+            assert.equal(aWindow.toNumber(), latestTime() + windowTime);
+        });
+        it("reverts if not challenged", async function(){
+            await assertRevert(this.token.affirm(rInit, 10, 1,
+                {from:spenderA}));
+        });
+        it("withdraws affirm deposit", async function(){
+            const need = 500;
+            const preBalance = await this.token.balanceOf(spenderB);
+            await this.token.challenge(qInit, rInit, need, 1, {from:spenderA});
+            await this.token.affirm(rInit, need, 1, {from:spenderB});
+            const postBalance =  await this.token.balanceOf(spenderB);
+            assert.equal(preBalance.toNumber() - need, postBalance.toNumber());
+        });
+    });
     // describe("Moderate", function(){
     //     it("only succeeds with community moderator", async function(){
     //

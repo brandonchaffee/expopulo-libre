@@ -36,6 +36,16 @@ contract ModerationTest is Moderation {
         return SUint[keccak256(_rHash, "CDepositTotal", _type)];
     }
 
+    function getADepositOf(bytes _rHash, uint256 _type, address _target)
+    public view returns(uint256){
+        return SUint[keccak256(_rHash, "ADeposit", _type,  _target)];
+    }
+
+    function getTotalADeposit(bytes _rHash, uint256 _type)
+    public view returns(uint256){
+        return SUint[keccak256(_rHash, "ADepositTotal", _type)];
+    }
+
     function getModerationWindow(bytes _hash, uint256 _type)
     public view returns(uint256){
         return SUint[keccak256(_hash, "moderationWindow", _type)];
