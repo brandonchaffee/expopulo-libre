@@ -6,6 +6,10 @@
     "directories": {
         "test": "test"
     },
+    "scripts": {
+        "test": "scripts/test.sh",
+        "test-window": ".\\scripts\\test.sh"
+    },
     "keywords": [],
     "author": "",
     "license": "ISC",
