@@ -1,8 +1,6 @@
 # eternal-tested
 
 ## Dependencies
-
-### Dependencies
 NodeJS ([installation instruction](https://nodejs.org/en/download/))
 
 ## Build and Test
