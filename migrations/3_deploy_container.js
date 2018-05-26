@@ -1,4 +1,4 @@
-var LogicContainer = artifacts.require('./LogicContainer.sol')
+// var LogicContainer = artifacts.require('./LogicContainer.sol')
 
 // var Content = artifacts.require("./sections/Content.sol")
 // var Moderation = artifacts.require("./sections/Moderation.sol")
