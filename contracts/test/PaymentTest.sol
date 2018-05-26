@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import '../sections/Payment.sol';
+import "../sections/Payment.sol";
 
 contract PaymentTest is Payment {
     constructor(
@@ -22,7 +22,7 @@ contract PaymentTest is Payment {
         SUint[keccak256("balance", rCreator)] = rBalance;
         SUint[keccak256("balance", lowBalance)] = lBalance;
         SBool[keccak256(rInvalid, "isInvalid")] = true;
-        SUint[keccak256( "paymentLockout")] = 1000;
+        SUint[keccak256("paymentLockout")] = 1000;
     }
 
     function balanceOf(address owner) public view returns (uint256) {

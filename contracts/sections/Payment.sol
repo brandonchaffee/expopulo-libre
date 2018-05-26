@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
-import '../imports/Escrow.sol';
-import '../imports/EternalStorage.sol';
+import "../imports/Escrow.sol";
+import "../imports/EternalStorage.sol";
 
 contract Payment is Escrow {
 
@@ -52,7 +52,7 @@ contract Payment is Escrow {
 		SUint[keccak256(_rHash, "totalDisbursed")] =
 		SUint[keccak256(_rHash, "totalDisbursed")].add(_amount);
 		SUint[keccak256(_rHash, "escrowWindow", msg.sender)] = now.add(
-		SUint[keccak256( "paymentLockout")]);
+		SUint[keccak256("paymentLockout")]);
 	}
 
 	function retrieveBounty(bytes _rHash, address _disburser)

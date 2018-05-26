@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import '../imports/EternalStorage.sol';
+import "../imports/EternalStorage.sol";
 
 contract Content is EternalStorage {
 

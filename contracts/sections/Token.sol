@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
-import '../imports/math/SafeMath.sol';
-import '../imports/EternalStorage.sol';
+import "../imports/math/SafeMath.sol";
+import "../imports/EternalStorage.sol";
 
 contract Token is EternalStorage {
 	using SafeMath for uint256;
@@ -16,15 +16,15 @@ contract Token is EternalStorage {
 	function decimals() public view returns (uint256) {
 		return SUint[keccak256("decimals")];
 	}
-	
+
 	function symbol() public view returns (string) {
 		return SString[keccak256("symbol")];
 	}
-	
+
 	function name() public view returns (string) {
 		return SString[keccak256("name")];
 	}
-	
+
 	function balanceOf(address owner) public view returns (uint256) {
 		return SUint[keccak256("balance", owner)];
 	}
@@ -51,7 +51,7 @@ contract Token is EternalStorage {
 		bytes32 allowanceFromToSenderHash = keccak256("allowance", from, msg.sender);
 
 		require(to != address(0));
-		require(SUint[balanceFromHash] >= value );
+		require(SUint[balanceFromHash] >= value);
 		require(SUint[allowanceFromToSenderHash] >= value);
 
 		SUint[balanceFromHash] = balanceOf(from).sub(value);

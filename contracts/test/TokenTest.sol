@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import '../sections/Token.sol';
+import "../sections/Token.sol";
 
 contract TokenTest is Token {
     constructor(

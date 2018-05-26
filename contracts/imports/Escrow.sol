@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
-import './EternalStorage.sol';
-import './math/SafeMath.sol';
+import "./EternalStorage.sol";
+import "./math/SafeMath.sol";
 
 contract Escrow is EternalStorage {
 	using SafeMath for uint256;

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import '../imports/Escrow.sol';
+import "../imports/Escrow.sol";
 
 contract Moderation is Escrow {
 
