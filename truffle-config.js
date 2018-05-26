@@ -1,12 +1,12 @@
-require('babel-polyfill');
-require('babel-register');
+require('babel-polyfill')
+require('babel-register')
 
 module.exports = {
   networks: {
     development: {
-      host: "127.0.0.1",
+      host: '127.0.0.1',
       port: 8545,
-      network_id: "*"
+      network_id: '*'
     }
   }
-};
+}
