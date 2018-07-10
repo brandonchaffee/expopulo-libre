@@ -1,5 +1,5 @@
 {
-  "name": "eternal-test",
+  "name": "expopulo-libre",
   "version": "1.0.0",
   "description": "",
   "main": "truffle-config.js",
@@ -8,15 +8,14 @@
   },
   "scripts": {
     "test": "scripts/test.sh",
-    "test-windows": ".\\scripts\\test.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:sol": "solium -d .",
     "lint:sol:fix": "solium -d . --fix"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Brandon Chaffee",
+  "license": "MIT",
   "dependencies": {
     "ganache-cli": "^6.1.0",
     "truffle": "^4.1.9"

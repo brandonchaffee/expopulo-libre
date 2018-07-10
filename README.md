@@ -1,5 +1,5 @@
-# eternal-tested
-
+# expopulo-libre
+Expopulo implementation without necessity for administrators or organizations
 ## Dependencies
 NodeJS ([installation instruction](https://nodejs.org/en/download/))
 
