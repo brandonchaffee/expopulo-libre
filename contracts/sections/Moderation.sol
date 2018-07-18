@@ -34,10 +34,6 @@ contract Moderation is Escrow {
 		SUint[keccak256("moderationWindow")]);
 	}
 
-	function getChallengeTypeDefinition(uint256 _type)
-	public view returns(string){
-		return SString[keccak256("challenge",_type, "definition")];
-	}
 
 	function challenge(
 		bytes _qHash,

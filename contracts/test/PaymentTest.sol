@@ -24,8 +24,4 @@ contract PaymentTest is Payment {
         SBool[keccak256(rInvalid, "isInvalid")] = true;
         SUint[keccak256("paymentLockout")] = 1000;
     }
-
-    function balanceOf(address owner) public view returns (uint256) {
-		return SUint[keccak256("balance", owner)];
-	}
 }

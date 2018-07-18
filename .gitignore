@@ -80,3 +80,8 @@ config/development/*.sol.js
 config/test/contracts.json
 build
 dist
+
+#Documentation
+docs/_build
+docs/_static
+docs/_templates

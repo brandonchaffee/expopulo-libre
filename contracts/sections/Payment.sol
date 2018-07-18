@@ -82,19 +82,4 @@ contract Payment is Escrow {
 		SUint[keccak256(_qHash, "stakeOf", msg.sender)] =
 		SUint[keccak256(_qHash, "stakeOf", msg.sender)].add(_amount);
 	}
-
-	function getTotalStaked(bytes _qHash) public view returns(uint256){
-		return SUint[keccak256(_qHash, "totalStaked")];
-	}
-
-	function getStakeOf(bytes _qHash, address _staker) public view returns(uint256){
-		return SUint[keccak256(_qHash, "stakeOf", _staker)];
-	}
-
-	function getTotalDisbursed(bytes _rHash) public view returns(uint256){
-		return SUint[keccak256(_rHash, "totalDisbursed")];
-	}
-
-	function getDisbursementOf(bytes _rHash, address _disburser) public view returns(uint256){
-		return SUint[keccak256(_rHash, "disbursementOf", _disburser)];
-	}}
+}

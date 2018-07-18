@@ -2,6 +2,7 @@ import assertRevert from './helpers/assertRevert'
 import { advanceBlock } from './helpers/advanceToBlock'
 import { increaseTimeTo, duration } from './helpers/increaseTime'
 import latestTime from './helpers/latestTime'
+import SGet from './helpers/SGet'
 
 const Payment = artifacts.require('PaymentTest')
 
@@ -38,9 +39,9 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       const totalStaked = cStake + lStake
       await this.token.stakeBounty(qInit, cStake, {from: creator})
       await this.token.stakeBounty(qInit, lStake, {from: lowBalance})
-      const retTotalStaked = await this.token.getTotalStaked(qInit)
-      const retCStake = await this.token.getStakeOf(qInit, creator)
-      const retLStake = await this.token.getStakeOf(qInit, lowBalance)
+      const retTotalStaked = await this.token.getSUInt(SGet(qInit, 'totalStaked'))
+      const retCStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
+      const retLStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', lowBalance))
       assert.equal(retCStake, cStake)
       assert.equal(retLStake, lStake)
       assert.equal(retTotalStaked, totalStaked)
@@ -68,23 +69,22 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await this.token.disburseBounty(qInit, rInit, smallDisburse,
         {from: lowBalance})
 
-      const retLgStake = await this.token.getStakeOf(qInit, creator)
-      const retSmStake = await this.token.getStakeOf(qInit, lowBalance)
-      const totalStaked = await this.token.getTotalStaked(qInit)
+      const retLgStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
+      const retSmStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', lowBalance))
+      const totalStaked = await this.token.getSUInt(SGet(qInit, 'totalStaked'))
       assert.equal(retLgStake.toNumber(), largeStake - largeDisburse)
       assert.equal(retSmStake.toNumber(), smallStake - smallDisburse)
       assert.equal(totalStaked.toNumber(),
         smallStake + largeStake - smallDisburse - largeDisburse)
 
-      const retLgDisburse = await this.token.getDisbursementOf(rInit,
-        creator)
-      const retSmDisburse = await this.token.getDisbursementOf(rInit,
-        lowBalance)
-      const totalDisbursed = await this.token.getTotalDisbursed(rInit)
+      const retLgDisburse = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+        creator))
+      const retSmDisburse = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+        lowBalance))
+      const totalDisbursed = await this.token.getSUInt(SGet(rInit, 'totalDisbursed'))
       assert.equal(retLgDisburse.toNumber(), largeDisburse)
       assert.equal(retSmDisburse.toNumber(), smallDisburse)
-      assert.equal(totalDisbursed.toNumber(), smallDisburse +
-                largeDisburse)
+      assert.equal(totalDisbursed.toNumber(), smallDisburse + largeDisburse)
     })
     it('reverts with excessive amount', async function () {
       await this.token.stakeBounty(qInit, 25, {from: creator})
@@ -116,11 +116,11 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await increaseTimeTo(this.midTime)
       await assertRevert(this.token.retrieveBounty(rInit, creator,
         {from: responder}))
-      const midBalance = await this.token.balanceOf(responder)
+      const midBalance = await this.token.getSUInt(SGet('balance', responder))
 
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator, {from: responder})
-      const endBalance = await this.token.balanceOf(responder)
+      const endBalance = await this.token.getSUInt(SGet('balance', responder))
       assert.equal(midBalance.toNumber(), responderBalance)
       assert.equal(endBalance.toNumber(), responderBalance + bounty)
     })
@@ -139,12 +139,12 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await this.token.stakeBounty(qInit, stakeAmount, {from: creator})
       await this.token.disburseBounty(qInit, rInit, disburseAmount,
         {from: creator})
-      const preRetrieval = await this.token.getDisbursementOf(rInit,
-        creator)
+      const preRetrieval = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+        creator))
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator, {from: responder})
-      const postRetrieval = await this.token.getDisbursementOf(rInit,
-        creator)
+      const postRetrieval = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+        creator))
       assert.equal(postRetrieval, preRetrieval - disburseAmount)
     })
   })
@@ -158,8 +158,8 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await this.token.retrieveBounty(rInit, creator,
         {from: responder})
       await this.token.recallDistribution(qInit, rInit, {from: creator})
-      const endStake = await this.token.getStakeOf(qInit, creator)
-      const endBalance = await this.token.balanceOf(responder)
+      const endStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
+      const endBalance = await this.token.getSUInt(SGet('balance', responder))
       assert.equal(endStake.toNumber(), 0)
       assert.equal(endBalance.toNumber(), amount + responderBalance)
     })
@@ -170,9 +170,9 @@ contract('Payment', function ([creator, responder, lowBalance]) {
         {from: creator})
       await this.token.recallDistribution(qInit, rInit,
         {from: creator})
-      const endStake = await this.token.getStakeOf(qInit, creator)
-      const endDisburse = await this.token.getDisbursementOf(
-        rInit, creator)
+      const endStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
+      const endDisburse = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+        creator))
       assert.equal(endStake.toNumber(), amount)
       assert.equal(endDisburse.toNumber(), 0)
     })
@@ -181,7 +181,7 @@ contract('Payment', function ([creator, responder, lowBalance]) {
     it('decrements balance from staking', async function () {
       const stakeValue = 25
       await this.token.stakeBounty(qInit, stakeValue, {from: creator})
-      const endingBalance = await this.token.balanceOf(creator)
+      const endingBalance = await this.token.getSUInt(SGet('balance', creator))
       assert.equal(endingBalance.toNumber(), creatorBalance - stakeValue)
     })
     it('increments balance from retrieval', async function () {
@@ -192,7 +192,7 @@ contract('Payment', function ([creator, responder, lowBalance]) {
         {from: creator})
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator, {from: responder})
-      const endingBalance = await this.token.balanceOf(responder)
+      const endingBalance = await this.token.getSUInt(SGet('balance', responder))
       assert.equal(endingBalance.toNumber(), responderBalance +
                 disburseValue)
     })

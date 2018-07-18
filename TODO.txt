@@ -1,4 +1,3 @@
-1. Remove non-universal getters, place within test contracts
-2. Add bounty collection for non type 1
-3. abi.encodePacked for all keccak256
-4. Modify tests to use public variable getters
+1. Add bounty collection for non type 1
+2. abi.encodePacked for all keccak256
+3. Modify tests to use public variable getters
