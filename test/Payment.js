@@ -7,11 +7,11 @@ import SGet from './helpers/SGet'
 const Payment = artifacts.require('PaymentTest')
 
 const itemHashes = [
-  '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39',
-  'ccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b8',
-  'ccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b5',
-  '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3e',
-  '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3b'
+  '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39',
+  '0xccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b8',
+  '0xccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b5',
+  '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3e',
+  '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3b'
 ]
 
 const qInit = itemHashes[0]
@@ -39,9 +39,9 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       const totalStaked = cStake + lStake
       await this.token.stakeBounty(qInit, cStake, {from: creator})
       await this.token.stakeBounty(qInit, lStake, {from: lowBalance})
-      const retTotalStaked = await this.token.getSUInt(SGet(qInit, 'totalStaked'))
-      const retCStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
-      const retLStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', lowBalance))
+      const retTotalStaked = await this.token.getSUint(SGet(qInit, 'totalStaked'))
+      const retCStake = await this.token.getSUint(SGet(qInit, 'stakeOf', creator))
+      const retLStake = await this.token.getSUint(SGet(qInit, 'stakeOf', lowBalance))
       assert.equal(retCStake, cStake)
       assert.equal(retLStake, lStake)
       assert.equal(retTotalStaked, totalStaked)
@@ -69,19 +69,19 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await this.token.disburseBounty(qInit, rInit, smallDisburse,
         {from: lowBalance})
 
-      const retLgStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
-      const retSmStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', lowBalance))
-      const totalStaked = await this.token.getSUInt(SGet(qInit, 'totalStaked'))
+      const retLgStake = await this.token.getSUint(SGet(qInit, 'stakeOf', creator))
+      const retSmStake = await this.token.getSUint(SGet(qInit, 'stakeOf', lowBalance))
+      const totalStaked = await this.token.getSUint(SGet(qInit, 'totalStaked'))
       assert.equal(retLgStake.toNumber(), largeStake - largeDisburse)
       assert.equal(retSmStake.toNumber(), smallStake - smallDisburse)
       assert.equal(totalStaked.toNumber(),
         smallStake + largeStake - smallDisburse - largeDisburse)
 
-      const retLgDisburse = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+      const retLgDisburse = await this.token.getSUint(SGet(rInit, 'disbursementOf',
         creator))
-      const retSmDisburse = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+      const retSmDisburse = await this.token.getSUint(SGet(rInit, 'disbursementOf',
         lowBalance))
-      const totalDisbursed = await this.token.getSUInt(SGet(rInit, 'totalDisbursed'))
+      const totalDisbursed = await this.token.getSUint(SGet(rInit, 'totalDisbursed'))
       assert.equal(retLgDisburse.toNumber(), largeDisburse)
       assert.equal(retSmDisburse.toNumber(), smallDisburse)
       assert.equal(totalDisbursed.toNumber(), smallDisburse + largeDisburse)
@@ -116,11 +116,11 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await increaseTimeTo(this.midTime)
       await assertRevert(this.token.retrieveBounty(rInit, creator,
         {from: responder}))
-      const midBalance = await this.token.getSUInt(SGet('balance', responder))
+      const midBalance = await this.token.getSUint(SGet('balance', responder))
 
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator, {from: responder})
-      const endBalance = await this.token.getSUInt(SGet('balance', responder))
+      const endBalance = await this.token.getSUint(SGet('balance', responder))
       assert.equal(midBalance.toNumber(), responderBalance)
       assert.equal(endBalance.toNumber(), responderBalance + bounty)
     })
@@ -139,11 +139,11 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await this.token.stakeBounty(qInit, stakeAmount, {from: creator})
       await this.token.disburseBounty(qInit, rInit, disburseAmount,
         {from: creator})
-      const preRetrieval = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+      const preRetrieval = await this.token.getSUint(SGet(rInit, 'disbursementOf',
         creator))
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator, {from: responder})
-      const postRetrieval = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+      const postRetrieval = await this.token.getSUint(SGet(rInit, 'disbursementOf',
         creator))
       assert.equal(postRetrieval, preRetrieval - disburseAmount)
     })
@@ -157,9 +157,9 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator,
         {from: responder})
-      await this.token.recallDistribution(qInit, rInit, {from: creator})
-      const endStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
-      const endBalance = await this.token.getSUInt(SGet('balance', responder))
+      await this.token.recallDisbursement(qInit, rInit, {from: creator})
+      const endStake = await this.token.getSUint(SGet(qInit, 'stakeOf', creator))
+      const endBalance = await this.token.getSUint(SGet('balance', responder))
       assert.equal(endStake.toNumber(), 0)
       assert.equal(endBalance.toNumber(), amount + responderBalance)
     })
@@ -168,10 +168,10 @@ contract('Payment', function ([creator, responder, lowBalance]) {
       await this.token.stakeBounty(qInit, amount, {from: creator})
       await this.token.disburseBounty(qInit, rInit, amount,
         {from: creator})
-      await this.token.recallDistribution(qInit, rInit,
+      await this.token.recallDisbursement(qInit, rInit,
         {from: creator})
-      const endStake = await this.token.getSUInt(SGet(qInit, 'stakeOf', creator))
-      const endDisburse = await this.token.getSUInt(SGet(rInit, 'disbursementOf',
+      const endStake = await this.token.getSUint(SGet(qInit, 'stakeOf', creator))
+      const endDisburse = await this.token.getSUint(SGet(rInit, 'disbursementOf',
         creator))
       assert.equal(endStake.toNumber(), amount)
       assert.equal(endDisburse.toNumber(), 0)
@@ -181,7 +181,7 @@ contract('Payment', function ([creator, responder, lowBalance]) {
     it('decrements balance from staking', async function () {
       const stakeValue = 25
       await this.token.stakeBounty(qInit, stakeValue, {from: creator})
-      const endingBalance = await this.token.getSUInt(SGet('balance', creator))
+      const endingBalance = await this.token.getSUint(SGet('balance', creator))
       assert.equal(endingBalance.toNumber(), creatorBalance - stakeValue)
     })
     it('increments balance from retrieval', async function () {
@@ -192,7 +192,7 @@ contract('Payment', function ([creator, responder, lowBalance]) {
         {from: creator})
       await increaseTimeTo(this.endTime)
       await this.token.retrieveBounty(rInit, creator, {from: responder})
-      const endingBalance = await this.token.getSUInt(SGet('balance', responder))
+      const endingBalance = await this.token.getSUint(SGet('balance', responder))
       assert.equal(endingBalance.toNumber(), responderBalance +
                 disburseValue)
     })

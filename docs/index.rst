@@ -12,6 +12,10 @@ Expopulo-Libre
 
    intro.rst
    basics.rst
-   appendix.rst
+   eternal-storage-appendix.rst
+   escrow-appendix.rst
+   content-appendix.rst
+   moderation-appendix.rst
+   payment-appendix.rst
 
 * :ref:`genindex`

@@ -1,10 +1,10 @@
-.. index:: ! appendix
-.. _appendix:
+.. index:: ! moderation-appendix
+.. _moderation-appendix:
 
 
-#################
-Contract Appendix
-#################
+###################
+Moderation Appendix
+###################
 
 Functions
 ~~~~~~~~~

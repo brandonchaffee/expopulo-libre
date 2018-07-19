@@ -1,8 +1,8 @@
 import assertRevert from './helpers/assertRevert'
 import SGet from './helpers/SGet'
 const Content = artifacts.require('ContentTest')
-const qH = '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39'
-const rH = 'ccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b8'
+const qH = '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39'
+const rH = '0xccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b8'
 const community = 'General'
 const oType = 1
 const tType = 2
@@ -16,7 +16,7 @@ contract('Content', function ([creator, responder, normal]) {
       await this.token.createQuery(qH, community, oType, {from: creator})
       const queryOwner = await this.token.getSAddress(SGet(qH, 'owner'))
       const queryCommunity = await this.token.getSString(SGet(qH, 'community'))
-      const queryType = await this.token.getSUInt(SGet(qH, 'type'))
+      const queryType = await this.token.getSUint(SGet(qH, 'type'))
       assert.equal(queryOwner, creator)
       assert.equal(queryCommunity, community)
       assert.equal(queryType, oType)

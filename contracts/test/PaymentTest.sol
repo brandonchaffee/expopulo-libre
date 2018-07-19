@@ -16,6 +16,7 @@ contract PaymentTest is Payment {
     ) public {
         SAddress[keccak256(qHash, "owner")] = qCreator;
         SAddress[keccak256(rHash, "owner")] = rCreator;
+        SBool[keccak256(rHash, "responseTo", qHash)] = true;
         SAddress[keccak256(rInvalid, "owner")] = rCreator;
 
         SUint[keccak256("balance", qCreator)] = cBalance;

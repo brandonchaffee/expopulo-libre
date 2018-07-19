@@ -4,40 +4,47 @@ import "../imports/Escrow.sol";
 
 contract Moderation is Escrow {
 
-	modifier initialized(bytes _hash) {
+	// Ms1 (Moderation Appendix)
+	modifier initialized(bytes32 _hash) {
 		require(SAddress[keccak256(_hash, "owner")] != address(0));
 		_;
 	}
 
+	// Ms2 (Moderation Appendix)
 	modifier validChallengeType(uint256 _type){
 		require(SBool[keccak256("challenge", _type)]);
 		_;
 	}
 
+	// Ms3 (Moderation Appendix)
 	function isModerator(string _community) public view returns(bool){
 		return SBool[keccak256(_community, msg.sender)];
 	}
 
-	modifier inModerationWindow(bytes _hash, uint256 _type){
+	// Ms4 (Moderation Appendix)
+	modifier inModerationWindow(bytes32 _hash, uint256 _type){
 		require(now <= SUint[keccak256(_hash, "moderationWindow", _type)]);
 		_;
 	}
 
-	modifier outModerationWindow(bytes _hash, uint256 _type){
+	// Ms5 (Moderation Appendix)
+	modifier outModerationWindow(bytes32 _hash, uint256 _type){
 		require(now > SUint[keccak256(_hash, "moderationWindow", _type)]);
 		_;
 	}
 
-	function extendModerationWindow(bytes _hash, uint256 _type)
+	// Mf1 (Moderation Appendix)
+	function extendModerationWindow(bytes32 _hash, uint256 _type)
 	internal {
 		SUint[keccak256(_hash, "moderationWindow", _type)] = now.add(
 		SUint[keccak256("moderationWindow")]);
 	}
 
 
+	// Mf2 (Moderation Appendix)
 	function challenge(
-		bytes _qHash,
-		bytes _rHash,
+		bytes32 _qHash,
+		bytes32 _rHash,
 		uint256 _deposit,
 		uint256 _type
 	)
@@ -71,7 +78,8 @@ contract Moderation is Escrow {
 		}
 	}
 
-	function challengeDepositNeeded(bytes _qHash, bytes _rHash, uint256 _type)
+	// Mf3 (Moderation Appendix)
+	function challengeDepositNeeded(bytes32 _qHash, bytes32 _rHash, uint256 _type)
 	public view returns(uint) {
 	    uint256 needed;
 		if(_type == 1){
@@ -83,7 +91,8 @@ contract Moderation is Escrow {
 			SUint[keccak256(_rHash, "CDepositTotal", _type)]);
 	}
 
-	function affirm(bytes _rHash, uint256 _deposit, uint256 _type)
+	// Mf4 (Moderation Appendix)
+	function affirm(bytes32 _rHash, uint256 _deposit, uint256 _type)
 		initialized(_rHash)
 		inModerationWindow(_rHash, _type)
 	public {
@@ -109,7 +118,8 @@ contract Moderation is Escrow {
 		}
 	}
 
-	function affirmDepositNeeded(bytes _rHash, uint256 _type)
+	// Mf5 (Moderation Appendix)
+	function affirmDepositNeeded(bytes32 _rHash, uint256 _type)
 	public view returns(uint) {
 		uint256 needed = SUint[keccak256(_rHash, "CDepositTotal",
 			_type)];
@@ -118,9 +128,10 @@ contract Moderation is Escrow {
 	}
 
 	//Moderation Functions
+	// Mf6 (Moderation Appendix)
 	function moderateObject(
-		bytes _qHash,
-		bytes _rHash,
+		bytes32 _qHash,
+		bytes32 _rHash,
 		uint256 _type,
 		bool _isValid
 	)
@@ -143,7 +154,8 @@ contract Moderation is Escrow {
 			SUint[keccak256(_rHash, "invalidCount", _type)];
 	}
 
-	function retrieveModerationDeposit(bytes _rHash, uint256 _type)
+	// Mf7 (Moderation Appendix)
+	function retrieveModerationDeposit(bytes32 _rHash, uint256 _type)
 		initialized(_rHash)
 		outModerationWindow(_rHash, _type)
 	public {
@@ -164,7 +176,8 @@ contract Moderation is Escrow {
 		}
 	}
 
-	function collectModerationPayment(bytes _rHash, uint256 _type)
+	// Mf8 (Moderation Appendix)
+	function collectModerationPayment(bytes32 _rHash, uint256 _type)
 		initialized(_rHash)
 		outModerationWindow(_rHash, _type)
 	public {
@@ -184,8 +197,8 @@ contract Moderation is Escrow {
 
 
 	// function collectModerationBounty(
-	// 	bytes _qHash,
-	// 	bytes _rHash,
+	// 	bytes32 _qHash,
+	// 	bytes32 _rHash,
 	// 	uint256 _type,
 	// 	address _staker
 	// )
@@ -193,6 +206,7 @@ contract Moderation is Escrow {
 
 	// }
 
+	// Mf9 (Moderation Appendix)
 	function activateModerator(string _community)
 	public {
 		uint256 _deposit = SUint[keccak256("moderatorDeposit")];
@@ -207,6 +221,7 @@ contract Moderation is Escrow {
 			 SUint[keccak256("moderatorDepositLockout")]);
 	}
 
+	// MfA (Moderation Appendix)
 	function deactivateModerator(string _community)
 	public {
 		require(SBool[keccak256(_community, msg.sender)]);

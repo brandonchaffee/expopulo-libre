@@ -1,3 +1,4 @@
 1. Add bounty collection for non type 1
 2. abi.encodePacked for all keccak256
 3. Modify tests to use public variable getters
+4. Remove test contract specs, use integration

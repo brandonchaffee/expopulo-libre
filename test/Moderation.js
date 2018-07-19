@@ -6,11 +6,11 @@ import SGet from './helpers/SGet'
 
 const Moderation = artifacts.require('ModerationTest')
 const itemHashes = [
-  '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39',
-  'ccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b8',
-  'ccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b5',
-  '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3e',
-  '027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3b'
+  '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39',
+  '0xccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b8',
+  '0xccef599d1a13bed9989e424011aed2c023fce25917864cd7de38a761567410b5',
+  '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3e',
+  '0x027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b3b'
 ]
 const qInit = itemHashes[0]
 const rInit = itemHashes[1]
@@ -57,11 +57,11 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
         {from: spenderA})
       await this.token.challenge(qInit, rInit, bDeposit, 1,
         {from: spenderB})
-      const spenderADeposit = await this.token.getSUInt(SGet(rInit, 'CDeposit',
+      const spenderADeposit = await this.token.getSUint(SGet(rInit, 'CDeposit',
         1, spenderA))
-      const spenderBDeposit = await this.token.getSUInt(SGet(rInit, 'CDeposit',
+      const spenderBDeposit = await this.token.getSUint(SGet(rInit, 'CDeposit',
         1, spenderB))
-      const totalDeposit = await this.token.getSUInt(SGet(rInit,
+      const totalDeposit = await this.token.getSUint(SGet(rInit,
         'CDepositTotal', 1))
       assert.equal(spenderADeposit, aDeposit)
       assert.equal(spenderBDeposit, bDeposit)
@@ -71,7 +71,7 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
       const preValidity = await this.token.getSBool(SGet(rInit, 'isInvalid', 1))
       await this.token.challenge(qInit, rInit, 250, 1, {from: spenderA})
       await this.token.challenge(qInit, rInit, 250, 1, {from: spenderB})
-      const windowValue = await this.token.getSUInt(SGet(rInit,
+      const windowValue = await this.token.getSUint(SGet(rInit,
         'moderationWindow', 1))
       const postValidity = await this.token.getSBool(SGet(rInit, 'isInvalid', 1))
       assert.equal(windowValue.toNumber(), latestTime() + windowTime)
@@ -90,9 +90,9 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
     })
     it('withdraws challenge deposit', async function () {
       const value = 250
-      const preBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      const preBalance = await this.token.getSUint(SGet('balance', spenderA))
       await this.token.challenge(qInit, rInit, value, 1, {from: spenderA})
-      const postBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      const postBalance = await this.token.getSUint(SGet('balance', spenderA))
       assert.equal(preBalance.toNumber() - value, postBalance.toNumber())
     })
     it('reverts on invalid type', async function () {
@@ -107,11 +107,11 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
       const bDeposit = 5
       await this.token.affirm(rInit, aDeposit, 1, {from: spenderA})
       await this.token.affirm(rInit, bDeposit, 1, {from: spenderB})
-      const spenderADeposit = await this.token.getSUInt(SGet(rInit, 'ADeposit',
+      const spenderADeposit = await this.token.getSUint(SGet(rInit, 'ADeposit',
         1, spenderA))
-      const spenderBDeposit = await this.token.getSUInt(SGet(rInit, 'ADeposit',
+      const spenderBDeposit = await this.token.getSUint(SGet(rInit, 'ADeposit',
         1, spenderB))
-      const totalDeposit = await this.token.getSUInt(SGet(rInit,
+      const totalDeposit = await this.token.getSUint(SGet(rInit,
         'ADepositTotal', 1))
       assert.equal(spenderADeposit.toNumber(), aDeposit)
       assert.equal(spenderBDeposit.toNumber(), bDeposit)
@@ -119,11 +119,11 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
     })
     it('needed value extends moderation window further', async function () {
       await this.token.challenge(qInit, rInit, 500, 1, {from: spenderA})
-      const cWindow = await this.token.getSUInt(SGet(rInit,
+      const cWindow = await this.token.getSUint(SGet(rInit,
         'moderationWindow', 1))
       await increaseTimeTo(this.midTime)
       await this.token.affirm(rInit, 500, 1, {from: spenderB})
-      const aWindow = await this.token.getSUInt(SGet(rInit,
+      const aWindow = await this.token.getSUint(SGet(rInit,
         'moderationWindow', 1))
       assert(aWindow > cWindow)
       assert.equal(aWindow.toNumber(), latestTime() + windowTime)
@@ -134,10 +134,10 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
     })
     it('withdraws affirm deposit', async function () {
       const need = 500
-      const preBalance = await this.token.getSUInt(SGet('balance', spenderB))
+      const preBalance = await this.token.getSUint(SGet('balance', spenderB))
       await this.token.challenge(qInit, rInit, need, 1, {from: spenderA})
       await this.token.affirm(rInit, need, 1, {from: spenderB})
-      const postBalance = await this.token.getSUInt(SGet('balance', spenderB))
+      const postBalance = await this.token.getSUint(SGet('balance', spenderB))
       assert.equal(preBalance.toNumber() - need, postBalance.toNumber())
     })
   })
@@ -180,16 +180,16 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
   })
   describe('Moderator', function () {
     it('withdraws on activation', async function () {
-      const preBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      const preBalance = await this.token.getSUint(SGet('balance', spenderA))
       await this.token.activateModerator(community, {from: spenderA})
-      const postBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      const postBalance = await this.token.getSUint(SGet('balance', spenderA))
       assert.equal(postBalance, preBalance - modDeposit)
     })
     it('deposits on deactivation', async function () {
       await this.token.activateModerator(community, {from: spenderA})
-      const preBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      const preBalance = await this.token.getSUint(SGet('balance', spenderA))
       await this.token.deactivateModerator(community, {from: spenderA})
-      const postBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      const postBalance = await this.token.getSUint(SGet('balance', spenderA))
       assert.equal(postBalance.toNumber(), preBalance.toNumber() +
                 modDeposit)
     })
@@ -216,32 +216,32 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
     it('challenge deposit retrieved on invalidation', async function () {
       await this.token.moderateObject(qInit, rInit, 1, false, {from: modA})
       await increaseTimeTo(this.endTime)
-      let preBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      let preBalance = await this.token.getSUint(SGet('balance', spenderA))
       await this.token.retrieveModerationDeposit(rInit, 1,
         {from: spenderA})
-      let postBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      let postBalance = await this.token.getSUint(SGet('balance', spenderA))
       assert.equal(postBalance.toNumber(), preBalance.toNumber() +
                 depositNeed)
 
-      preBalance = await this.token.getSUInt(SGet('balance', spenderB))
+      preBalance = await this.token.getSUint(SGet('balance', spenderB))
       await this.token.retrieveModerationDeposit(rInit, 1,
         {from: spenderB})
-      postBalance = await this.token.getSUInt(SGet('balance', spenderB))
+      postBalance = await this.token.getSUint(SGet('balance', spenderB))
       assert.equal(postBalance.toNumber(), preBalance.toNumber())
     })
     it('affirm deposit retrieved on validation', async function () {
       await this.token.moderateObject(qInit, rInit, 1, true, {from: modA})
       await increaseTimeTo(this.endTime)
-      let preBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      let preBalance = await this.token.getSUint(SGet('balance', spenderA))
       await this.token.retrieveModerationDeposit(rInit, 1,
         {from: spenderA})
-      let postBalance = await this.token.getSUInt(SGet('balance', spenderA))
+      let postBalance = await this.token.getSUint(SGet('balance', spenderA))
       assert.equal(postBalance.toNumber(), preBalance.toNumber())
 
-      preBalance = await this.token.getSUInt(SGet('balance', spenderB))
+      preBalance = await this.token.getSUint(SGet('balance', spenderB))
       await this.token.retrieveModerationDeposit(rInit, 1,
         {from: spenderB})
-      postBalance = await this.token.getSUInt(SGet('balance', spenderB))
+      postBalance = await this.token.getSUint(SGet('balance', spenderB))
       assert.equal(postBalance.toNumber(), preBalance.toNumber() +
                 depositNeed)
     })
@@ -250,14 +250,14 @@ contract('Moderation', function ([creator, responder, modA, modB, modC, nonMod,
       await this.token.moderateObject(qInit, rInit, 1, true, {from: modB})
       await this.token.moderateObject(qInit, rInit, 1, false, {from: modC})
       await increaseTimeTo(this.endTime)
-      const depositTotal = await this.token.getSUInt(SGet(rInit,
+      const depositTotal = await this.token.getSUint(SGet(rInit,
         'CDepositTotal', 1))
       var modList = [modA, modB, modC]
       const moderatorPayment = Math.floor(depositTotal / modList.length)
       modList.forEach(async function (x) {
-        let preBalance = await this.token.getSUInt(SGet('balance', x))
+        let preBalance = await this.token.getSUint(SGet('balance', x))
         await this.token.collectModerationPayment(rInit, 1, {from: x})
-        let postBalance = await this.token.getSUInt(SGet('balance', x))
+        let postBalance = await this.token.getSUint(SGet('balance', x))
         assert.equal(postBalance.toNumber(), preBalance.toNumber() +
                     moderatorPayment)
       })
