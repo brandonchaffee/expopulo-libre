@@ -79,8 +79,11 @@ contract Moderation is Escrow {
 	}
 
 	// Mf3 (Moderation Appendix)
-	function challengeDepositNeeded(bytes32 _qHash, bytes32 _rHash, uint256 _type)
-	public view returns(uint) {
+	function challengeDepositNeeded(
+		bytes32 _qHash,
+		bytes32 _rHash,
+		uint256 _type
+	) public view returns(uint) {
 	    uint256 needed;
 		if(_type == 1){
 			needed = SUint[keccak256(_qHash,"totalStaked")].div(100);
