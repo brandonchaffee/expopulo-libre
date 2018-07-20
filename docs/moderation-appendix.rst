@@ -14,9 +14,9 @@ ID                  Mf1
 ================    ====================================================
 Name                ``extendModerationWindow``
 
-Description         | Internal function for extending the moderation window after the completion of another
-                    | phase to the moderation process. This occcurs after challenge deposit has been met or
-                    | after affirm deposit has been met.
+Description         | Internal function for extending the moderation window after the completion of
+                    | another phase to the moderation process. This occurs after challenge deposit has
+                    | been met or after affirm deposit has been met.
 
 
 Contract            ``Moderation.sol``
@@ -38,14 +38,14 @@ ID                  Mf2
 ================    ====================================================
 Name                ``challenge``
 
-Description         | Initailizes a challenge either for or against a response. If the challenge is for a
-                    | response, the sender is indicating that the reponse satisfies the query and the bounty
+Description         | Initializes a challenge either for or against a response. If the challenge is for a
+                    | response, the sender is indicating that the response satisfies the query and the bounty
                     | staked to the query should be deposited to the creator of the response. If the
-                    | challenge is aginst the response, the sender is indicating that this response is
+                    | challenge is against the response, the sender is indicating that this response is
                     | malicious or invalid and should therefore be blocked from retrieving disbursements.
                     | The challenge action is confirmed once the collective deposits for a challenge reach
                     | either 1/100 of the total amount staked or disbursed. The confirmation of a challenge
-                    | invalidates the oppsoing party until it is confirmed for affirmation.
+                    | invalidates the opposing party until it is confirmed for affirmation.
 
 
 Contract            ``Moderation.sol``
@@ -61,7 +61,7 @@ Requirements        - Response must have be a response to the query in question
                     - Response must not have already been challenged by this type
                     - Sender balance must not exceed amount depositing for challenge
                     - Challenge deposit addition must not exceed total necessary to confirm challenge
-                    - Response must be initailized, from **Ms1**
+                    - Response must be initialized, from **Ms1**
                     - Type must be a valid challenge type, from **Ms2**
 
 Returns             *None*
@@ -98,11 +98,11 @@ ID                  Mf4
 ================    ====================================================
 Name                ``affirm``
 
-Description         | Initailizes an affirm after a response has been challenged. If the challenge was
-                    | against the response, the affirming sender is inidicating that the response remains
+Description         | Initializes an affirm after a response has been challenged. If the challenge was
+                    | against the response, the affirming sender is indicating that the response remains
                     | valid and should therefore be able to retrieve disbursements. If the challenge was
                     | for the response, the sender is indicating that the response does not satisfy the
-                    | query and should therefore not recieve the query's staked bounty amount.
+                    | query and should therefore not receive the query's staked bounty amount.
 
 
 Contract            ``Moderation.sol``
@@ -117,7 +117,7 @@ Parameters          | ``bytes32`` **_rHash** -- challenged response
 Requirements        - Response must have been confirmed for challenge
                     - Sender balance must not exceed amount depositing for affirming
                     - Affirm deposit addition must not exceed total necessary to confirm affirm
-                    - Response must be initailized, from **Ms1**
+                    - Response must be initialized, from **Ms1**
                     - Moderation window must not have closed for response, from **Ms4**
 
 Returns             *None*
@@ -153,22 +153,26 @@ ID                  Mf6
 ================    ====================================================
 Name                ``moderateObject``
 
-Description         | Balance transfer function equivalent to StandardToken's ``transfer`` with the addition
-                    | of the requirement that the sender cannot be currently in a vote so as to maintain the
-                    | proper amount of voting rights.
+Description         | Moderates the claim of a challenge on an object as either valid or invalid as
+                    | determined by the community moderator that is calling this function. This increments
+                    | the moderators vote with the sign with which they are voting.
 
 
 Contract            ``Moderation.sol``
 
 Emits               *None*
 
-Parameters          | ``address`` **_to** -- where transfer is going to
-                    | ``uint256`` **_value** -- amount being transfered
+Parameters          | ``bytes32`` **_qHash** -- query to which response was made
+                    | ``bytes32`` **_rHash** -- challenged or challenging response
+                    | ``uint256`` **_type** -- challenge type ID
+                    | ``bool`` **_isValid** -- yes or no vote on the challenges validity
 
 
-Requirements        - Sender must not be currently in a vote
-                    - Recipient must not be from zero ``address``
-                    - Sender must have sufficient balance
+Requirements        - Response must be initialized, from **Ms1**
+                    - Moderation window must not have expired, from **Ms4**
+                    - Supplied query must be the query to which the response was made
+                    - Sender must be a moderator of the query's community
+                    - Sender must not have previously moderated this response with this type
 
 Returns             *None*
 ================    ====================================================
@@ -180,22 +184,24 @@ ID                  Mf7
 ================    ====================================================
 Name                ``retrieveModerationDeposit``
 
-Description         | Balance transfer function equivalent to StandardToken's ``transfer`` with the addition
-                    | of the requirement that the sender cannot be currently in a vote so as to maintain the
-                    | proper amount of voting rights.
+Description         | Retrieves the deposit made for challenge or affirming. This can only be done by the
+                    | party validated by moderation, or through challenge expiration. If the object
+                    | challenge is moderated as valid or if the moderation window expires without
+                    | affirming, the challenge deposit may be retrieved. If the object challenge is
+                    | moderated as invalid the affirm deposit may be retrieved.
 
 
 Contract            ``Moderation.sol``
 
 Emits               *None*
 
-Parameters          | ``address`` **_to** -- where transfer is going to
-                    | ``uint256`` **_value** -- amount being transfered
+Parameters          | ``bytes32`` **_rHash** -- challenged or challenging response
+                    | ``uint256`` **_type** -- challenge type ID
 
 
-Requirements        - Sender must not be currently in a vote
-                    - Recipient must not be from zero ``address``
-                    - Sender must have sufficient balance
+Requirements        - Response must be initialized, from **Ms1**
+                    - Moderation window must have expired, from **Ms5**
+                    - Moderation deposit cannot already be collected on object in question
 
 Returns             *None*
 ================    ====================================================
@@ -207,22 +213,23 @@ ID                  Mf8
 ================    ====================================================
 Name                ``collectModerationPayment``
 
-Description         | Balance transfer function equivalent to StandardToken's ``transfer`` with the addition
-                    | of the requirement that the sender cannot be currently in a vote so as to maintain the
-                    | proper amount of voting rights.
+Description         | Deposit a moderator's share of the invalidated party's deposit(s) to the moderator.
+                    | This serves as the incentive for moderation. The moderator receives in equal portion
+                    | of the invalidated deposit, shared among all moderators of the object in question.
 
 
 Contract            ``Moderation.sol``
 
 Emits               *None*
 
-Parameters          | ``address`` **_to** -- where transfer is going to
-                    | ``uint256`` **_value** -- amount being transfered
+Parameters          | ``bytes32`` **_rHash** -- challenged or challenging response
+                    | ``uint256`` **_type** -- challenge type ID
 
 
-Requirements        - Sender must not be currently in a vote
-                    - Recipient must not be from zero ``address``
-                    - Sender must have sufficient balance
+Requirements        - Response must be initialized, from **Ms1**
+                    - Moderation window must have expired, from **Ms5**
+                    -
+                    - Sender must have moderated the object in question.
 
 Returns             *None*
 ================    ====================================================
@@ -234,21 +241,21 @@ ID                  Mf9
 ================    ====================================================
 Name                ``activateModerator``
 
-Description         | Balance transfer function equivalent to StandardToken's ``transfer`` with the addition
-                    | of the requirement that the sender cannot be currently in a vote so as to maintain the
-                    | proper amount of voting rights.
+Description         | Activates the sender as a moderator of a specific community, with a withdrawal of a
+                    | deposit to be held in escrow until the moderator deactivates their status for this
+                    | community. A lockout period is establish from which the moderator cannot
+                    | deactivate within. This is established to avoid moderator status churning.
 
 
 Contract            ``Moderation.sol``
 
 Emits               *None*
 
-Parameters          | ``address`` **_to** -- where transfer is going to
-                    | ``uint256`` **_value** -- amount being transfered
+Parameters          | ``string`` **_community** -- community in question
 
 
-Requirements        - Sender must not be currently in a vote
-                    - Recipient must not be from zero ``address``
+Requirements        - Sender must not currently be a moderator of the specified community
+                    - Moderation lockout must have expired from previous activation
                     - Sender must have sufficient balance
 
 Returns             *None*
@@ -261,22 +268,17 @@ ID                  MfA
 ================    ====================================================
 Name                ``deactivateModerator``
 
-Description         | Balance transfer function equivalent to StandardToken's ``transfer`` with the addition
-                    | of the requirement that the sender cannot be currently in a vote so as to maintain the
-                    | proper amount of voting rights.
+Description         | Deactivates the sender as a moderator of a specific community and release
+                    | deposit back to sender.
 
 
 Contract            ``Moderation.sol``
 
 Emits               *None*
 
-Parameters          | ``address`` **_to** -- where transfer is going to
-                    | ``uint256`` **_value** -- amount being transfered
+Parameters          | ``string`` **_community** -- community in question
 
-
-Requirements        - Sender must not be currently in a vote
-                    - Recipient must not be from zero ``address``
-                    - Sender must have sufficient balance
+Requirements        - Sender must currently be a moderator of the specified community
 
 Returns             *None*
 ================    ====================================================
@@ -309,7 +311,7 @@ Name                ``validChallengeType``
 
 Contract            ``Moderation.sol``
 
-Description         | Modifier function for requiring that the challenge being initailized is a pre-approved
+Description         | Modifier function for requiring that the challenge being initialized is a pre-approved
                     | form of challenge. Currently this includes challenging the validity of an outstanding
                     | bounty (type 1) or challenging the validity of a recently disbursed bounty , being
                     | type 2 or 3.
